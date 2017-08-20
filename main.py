@@ -74,36 +74,34 @@ app.addMenuList("Windows", windowsMenu, windowsMenuPress)
 
 
 def initHomeWidget():
-    app.addLabel("homeTitle", "The SIP Analyzer")
+    app.addLabel("homeTitle", "The SIP Analyzer", 0)
 
-    app.addLabelEntry("Database path")
+    app.addLabelEntry("Database path", 1)
     app.setEntry("Database path", settings["savedDatabase"])
-    app.addButtons(["Select DB", "New Database"], homePress)
+    app.addButtons(["Select DB", "New Database"], homePress, 2)
     
-    app.addLabelEntry("SIP Log")
+    app.addLabelEntry("SIP Log", 3)
     app.setEntry("SIP Log", settings["savedLogPath"])
-    app.addButtons(["Select Log"], homePress)
+    app.addButtons(["Select Log"], homePress, 4)
     
-    app.addButtons(["Import"], homePress)
+    app.addButtons(["Import"], homePress, 5)
 
 def initSettingsWidget():
-    app.addLabel("settingsTitle", "Settings")
+    app.addLabel("settingsTitle", "Settings", 0)
     
-    app.addScrolledTextArea("settingsTextArea")
+    app.addScrolledTextArea("settingsTextArea", 1)
     app.setTextArea("settingsTextArea", settingsModule.getRawContent())
     
-    app.addButtons(["Save"], settingsPress)
+    app.addButtons(["Save"], settingsPress, 2)
 
 def initDatabaseWidget():
-    app.addLabel("databaseTitle", "Database")
-    app.addLabelEntry("database")
+    app.addLabel("databaseTitle", "Database", 0)
+    app.addLabelEntry("database", 1)
     app.setEntry("database", settings["savedDatabase"])
-    app.addLabelEntry("databaseQuery")
+    app.addLabelEntry("databaseQuery", 2)
     app.setEntry("databaseQuery", settings["savedDatabaseQuery"])
-    app.addButtons(["Save", "Execute"], databasePress)
-    app.addScrolledTextArea("databaseQueryResult")
-    app.setScrolledTextAreaWidths("databaseQueryResult", "100")
-    app.setScrolledTextAreaHeights("databaseQueryResult", "100")
+    app.addButtons(["Save", "Execute"], databasePress, 3)
+    app.addScrolledTextArea("databaseQueryResult", 4)
 
 
 ##
@@ -125,7 +123,37 @@ def homePress(button):
             print("Database imported.")
         else:
             print("Database does not exist.")
-        print(databaseModule.selectQuery("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"))
+        databaseModule.connect(app.getEntry("Database path"))
+        #result = databaseModule.selectQuery("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;")
+        #for row in result:
+        #    print(row[0])
+        with open(app.getEntry("SIP Log"), 'r') as file:
+            lineCount = 10000
+            c_count = lineCount
+            #for line in file:
+            #    lineCount += 1
+            
+            #app.addLabel("Import Percentage", "", 5,1)
+            packet = ""
+            packet_call_id = "%"
+            count = 0
+            for line in file:
+                if re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\s[0-9]*:\s\*[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d.[0-9]*:\s//', line):
+                    databaseModule.insertQuery("INSERT INTO Call(id, packet) VALUES(?, ?)", [count, packet])
+                    packet = ""
+                    packet_call_id = ""
+                elif re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sCall-ID:\s', line):
+                    k = re.search('(^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sCall-ID:\s)(.*)', line)
+                    packet_call_id = k.group(2)
+                
+                packet += line
+                count += 1
+                if count >= c_count:
+                    databaseModule.commit()
+                    print("Line: " + str(count))
+                    c_count += lineCount
+                #app.setEntry(str(count/lineCount) + "%")
+        databaseModule.close()
     elif button == "New Database":
         path = app.getEntry("Database path")
         print(path)

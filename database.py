@@ -20,7 +20,7 @@ class Database:
         self.connection.commit()
 
     def insertQuery(self, query, parameters):
-        self.cursor.execute(query, paramters)
+        self.cursor.execute(query, parameters)
 
     def selectQuery(self, query, parameters=None):
         if parameters == None:
@@ -31,4 +31,7 @@ class Database:
 
     def getResult(self):
         return self.result
+    
+    def commit(self):
+        self.connection.commit()
 

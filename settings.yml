@@ -4,4 +4,4 @@ savedDatabase: test.db
 savedDatabaseQuery: SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;
 packetRegex: ^(.*)
 packetID: 
-savedLogPath: /Users/johanandersson/Documents/test.txt
+savedLogPath: C:/Users/johan.andersson/Desktop/seb.log
