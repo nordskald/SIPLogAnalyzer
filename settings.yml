@@ -1,0 +1,7 @@
+mainWindowTitle: SIP Analyzer
+mainWindowSize: 800x500
+savedDatabase: test.db
+savedDatabaseQuery: SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;
+packetRegex: ^(.*)
+packetID: 
+savedLogPath: /Users/johanandersson/Documents/test.txt
