@@ -95,13 +95,14 @@ def initSettingsWidget():
     app.addButtons(["Save"], settingsPress, 2)
 
 def initDatabaseWidget():
-    app.addLabel("databaseTitle", "Database", 0)
-    app.addLabelEntry("database", 1)
+    app.addLabel("databaseTitle", "Database", 0, 1)
+    app.addLabelEntry("database", 1, 1)
     app.setEntry("database", settings["savedDatabase"])
-    app.addLabelEntry("databaseQuery", 2)
+    app.addLabelEntry("databaseQuery", 2, 1)
     app.setEntry("databaseQuery", settings["savedDatabaseQuery"])
-    app.addButtons(["Save", "Execute"], databasePress, 3)
-    app.addScrolledTextArea("databaseQueryResult", 4)
+    app.addButtons(["Save", "Execute"], databasePress, 3, 1)
+    app.addScrolledTextArea("databaseQueryResult", 4, 1)
+    app.addButtons(["Export"], databasePress, 5, 1)
 
 
 ##
@@ -135,7 +136,9 @@ def homePress(button):
             
             #app.addLabel("Import Percentage", "", 5,1)
             packet = ""
-            packet_call_id = "%"
+            packet_call_id = ""
+            packet_from_header = ""
+            packet_to_header = ""
             count = 0
             for line in file:
                 if re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\s[0-9]*:\s\*[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d.[0-9]*:\s//', line):
@@ -145,6 +148,14 @@ def homePress(button):
                 elif re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sCall-ID:\s', line):
                     k = re.search('(^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sCall-ID:\s)(.*)', line)
                     packet_call_id = k.group(2)
+                elif re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sFrom:\s<sip:(.*)@', line):
+                    k = re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sFrom:\s<sip:(.*)@', line)
+                    packet_from_header = k.group(1)
+                    print("From: " + packet_from_header)
+                elif re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sTo:\s<sip:(.*)@', line):
+                    k = re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sTo:\s<sip:(.*)@', line)
+                    packet_to_header = k.group(1)
+                    print("To:" + packet_to_header)
                 
                 packet += line
                 count += 1
@@ -156,7 +167,11 @@ def homePress(button):
         databaseModule.close()
     elif button == "New Database":
         path = app.getEntry("Database path")
-        print(path)
+        settings['savedDatabase'] = path
+        databaseModule.connect(path)
+        databaseModule.createQuery(settings['SipTable'])
+        databaseModule.close()
+        #print(path)
     elif button == "Select Log":
         path = app.openBox()
         app.setEntry("SIP Log", path)
@@ -177,6 +192,7 @@ def databasePress(button):
             print(databaseModule.getResult())
             result = databaseModule.getResult()
             textResult = ""
+            app.setTextArea("databaseQueryResult", "")
             for row in result:
                 textResult += row[0]
                 textResult += "\n"
@@ -187,6 +203,11 @@ def databasePress(button):
         settings["savedDatabase"] = app.getEntry("database")
         settings["savedDatabaseQuery"] = app.getEntry("databaseQuery")
         settingsModule.saveSettings(settings)
+    elif button == "Export":
+        path = app.saveBox()
+        with open(path, 'w') as file:
+            file.write(app.getTextArea("databaseQueryResult"))
+            file.close()
 
 def checkDatabaseExistance(databasePath):
     if os.path.isfile(databasePath):
