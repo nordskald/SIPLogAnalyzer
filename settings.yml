@@ -1,8 +1,8 @@
 mainWindowTitle: SIP Analyzer
 mainWindowSize: 1200x800
-savedDatabase: megatest.db
+savedDatabase: ghcab.db
 savedDatabaseQuery: SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;
 packetRegex: ^(.*)
 packetID: 
-savedLogPath: C:/Users/johan.andersson/Desktop/seb.log
+savedLogPath: C:/Users/johan.andersson/Downloads/212.247.43.122-2017-08-22.log
 SipTable: CREATE TABLE Call(id INT PRIMARY KEY NOT NULL, call_id BLOB, from_header BLOB, to_header BLOB, packet BLOB)

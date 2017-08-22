@@ -151,11 +151,11 @@ def homePress(button):
                 elif re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sFrom:\s<sip:(.*)@', line):
                     k = re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sFrom:\s<sip:(.*)@', line)
                     packet_from_header = k.group(1)
-                    print("From: " + packet_from_header)
+                    #print("From: " + packet_from_header)
                 elif re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sTo:\s<sip:(.*)@', line):
                     k = re.search('^[A-Z][a-z][a-z]\s\d\d\s\d\d:\d\d:\d\d\s\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\sTo:\s<sip:(.*)@', line)
                     packet_to_header = k.group(1)
-                    print("To:" + packet_to_header)
+                    #print("To:" + packet_to_header)
                 
                 packet += line
                 count += 1
