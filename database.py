@@ -8,7 +8,7 @@ class Database:
 
     def connect(self, databasename):
         self.databasename = databasename
-        self.connection = sqlite3.connect(self.databasename)
+        self.connection = sqlite3.connect(self.databasename, check_same_thread=False)
         self.cursor = self.connection.cursor()
 
     def close(self):
@@ -17,7 +17,6 @@ class Database:
 
     def createQuery(self, query):
         self.cursor.execute(query)
-        self.connection.commit()
 
     def insertQuery(self, query, parameters):
         self.cursor.execute(query, parameters)
