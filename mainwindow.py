@@ -57,8 +57,8 @@ class MainWindow(QMainWindow):
         self.importview = ImportView(self.importmodel, self.controller)
         self.setCentralWidget(self.importview)
     
-    def import_statusbarupdate(self, count):
-        self.statusBar().showMessage("Importing in progress. " + str(count/self.model.getLogMaxCount()) + "% completed.")
+    def import_statusbarupdate(self, message):
+        self.statusBar().showMessage(message)
     
     def import_dbfile_notexist(self):
         reply = QMessageBox.question(self, 'Message', 'The chosen databasefile does not exist. Do you wish to create it?',

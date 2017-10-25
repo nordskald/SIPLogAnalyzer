@@ -6,6 +6,7 @@ class ImportModel():
         self.logpath = ""
         self.dbpath = ""
         self.logmaxcount = 0
+        self.logcurrentcount = 0
     
     def setLogPath(self, path):
         self.logpath = path
@@ -22,5 +23,11 @@ class ImportModel():
     def setLogMaxCount(self, count):
         self.logmaxcount = count
     
-    def getlogMaxCount(self):
+    def getLogMaxCount(self):
         return self.logmaxcount
+    
+    def setLogCurrentCount(self, count):
+        self.logcurrentcount = count
+    
+    def getLogCurrentCount(self):
+        return self.logcurrentcount
