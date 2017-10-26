@@ -49,7 +49,7 @@ class MainWindow(QMainWindow):
         self.viewmenu.addAction(self.menuact_database)
     
     def menu_databaseaction(self):
-        self.databaseview = DatabaseView(self.databasemodel)
+        self.databaseview = DatabaseView(self.databasemodel, self.controller)
         self.setCentralWidget(self.databaseview)
         self.statusBar().showMessage(self.databasemodel.getQuery())
     

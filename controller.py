@@ -97,3 +97,37 @@ class Controller():
             time.sleep(1)
             self.mainwindow.import_statusbarupdate("Importing in progress. " + str((self.model.getLogCurrentCount()/self.model.getLogMaxCount())*100) + "% completed.")
             #print("Fetched new upadte.")
+    
+    def run_database_query(self, databasemodel):
+        self.databasemodel = databasemodel
+        if os.path.isfile(self.databasemodel.getPath()):
+            print("Attempting to run query...")
+            print(self.databasemodel.getQuery())
+            self.db_query = Database()
+            self.db_query.connect(self.databasemodel.getPath())
+            self.db_query.selectQuery(self.databasemodel.getQuery())
+            result = self.db_query.getResult()
+            textresult = ""
+            for row in result:
+                textresult += row[0]
+                textresult += "\n"
+            print(textresult)
+            self.db_query.close()
+        else:
+            print("Database does not exist.")
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

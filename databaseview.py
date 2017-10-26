@@ -3,13 +3,15 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from databasemodel import DatabaseModel
+from controller import *
 
 class DatabaseView(QWidget):
     
-    def __init__(self, dbmodel):
+    def __init__(self, dbmodel, controller):
         super().__init__()
         
         self.model = dbmodel
+        self.controller = controller
         
         self.initUI()
     
@@ -41,6 +43,7 @@ class DatabaseView(QWidget):
     def run_query(self):
         self.model.setPath(self.edit_dbpath.displayText())
         self.model.setQuery(self.edit_query.displayText())
+        self.controller.run_database_query(self.model)
     
     def run_dbpath(self):
         self.dbpath = QFileDialog.getOpenFileName(self, 'Open file', '/home')[0]
