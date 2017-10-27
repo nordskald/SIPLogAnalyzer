@@ -31,6 +31,8 @@ class DatabaseView(QWidget):
 
         self.button_query = QPushButton('Run query', self)
         self.button_query.clicked.connect(self.run_query)
+
+
         
         
         self.grid.addWidget(self.label_dbpath, 0, 0)
@@ -48,4 +50,5 @@ class DatabaseView(QWidget):
     def run_dbpath(self):
         self.dbpath = QFileDialog.getOpenFileName(self, 'Open file', '/home')[0]
         self.edit_dbpath.setText(self.dbpath)
+
     
