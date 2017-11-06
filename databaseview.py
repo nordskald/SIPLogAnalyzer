@@ -72,14 +72,28 @@ class DatabaseView(QWidget):
     
     def run_visualize(self):
         print("Visualizing...")
+        #print(self.model.getResult())
+        #print(self.model.getResult()[0])
         
-        if self.model.getResult != None:
-            for row in self.model.getResult():
-                for line in row[0]:
-                    if re.search("\sReceived:", line):
-                        print("Received.")
-                    elif re.search("\sSent:", line):
-                        print("Sent.")
+        for row in self.model.getResult():
+            if re.search("\sReceived:", row):
+                print("Received.")
+            elif re.search("\sSent:", row):
+                print("Sent.")
+            if re.search("Via:\s(.*)(;.*)", row):
+                r = re.search("Via:\s(.*)(;.*)", row)
+                print(r.group(1))
+        
+        #for row in self.model.getResult():
+        #    for line in row:
+                #if re.search("\sReceived:", line):
+                #    print("Received.")
+                #elif re.search("\sSent:", line):
+                #    print("Sent.")
+        #        if "Received:" in line:
+        #            print("Received.")
+        #        elif "Sent:" in line:
+        #            print("Sent.")
                 
     
     def run_dbpath(self):

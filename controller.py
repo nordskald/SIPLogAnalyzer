@@ -110,19 +110,22 @@ class Controller():
             self.db_query.selectQuery(self.databasemodel.getQuery())
             result = self.db_query.getResult()
             textresult = ""
+            arrayresult = []
             if self.databasemodel.getExportpath() != "":
                 with open(self.databasemodel.getExportpath(), 'w') as exportfile:
                     for row in result:
                         textresult += row[0]
                         textresult += "\n"
+                        arrayresult.append(row[0])
                     exportfile.write(textresult)
-                    self.databasemodel.setResult(result)
+                    self.databasemodel.setResult(arrayresult)
             else:
                 for row in result:
                     textresult += row[0]
                     textresult += "\n"
+                    arrayresult.append(row[0])
                 print(textresult)
-                self.databasemodel.setResult(result)
+                self.databasemodel.setResult(arrayresult)
             self.db_query.close()
         else:
             print("Database does not exist.")
