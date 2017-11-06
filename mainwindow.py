@@ -7,6 +7,7 @@ from PyQt5.QtCore import *
 from importview import ImportView
 from databaseview import DatabaseView
 from filterview import FilterView
+from visualizeview import VisualizeView
 
 #Models
 from importmodel import ImportModel
@@ -64,10 +65,13 @@ class MainWindow(QMainWindow):
         self.menuact_database.triggered.connect(self.menu_databaseaction)
         self.menuact_filter = QAction('Filter', self)
         self.menuact_filter.triggered.connect(self.menu_filteraction)
+        self.menuact_visualize = QAction('Visualize', self)
+        self.menuact_visualize.triggered.connect(self.menu_visualizeaction)
         
         self.viewmenu.addAction(self.menuact_import)
         self.viewmenu.addAction(self.menuact_database)
         self.viewmenu.addAction(self.menuact_filter)
+        self.viewmenu.addAction(self.menuact_visualize)
     
     def menu_databaseaction(self):
         self.databaseview = DatabaseView(self.databasemodel, self.controller, self.filtermodel)
@@ -82,6 +86,10 @@ class MainWindow(QMainWindow):
         self.filterview = FilterView(self.filtermodel)
         self.setCentralWidget(self.filterview)
     
+    def menu_visualizeaction(self):
+        self.visualizeview = VisualizeView(self.controller)
+        self.setCentralWidget(self.visualizeview)
+    
     def import_statusbarupdate(self, message):
         self.statusBar().showMessage(message)
     
@@ -92,4 +100,5 @@ class MainWindow(QMainWindow):
             return True
         else:
             return False
+    
     

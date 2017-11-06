@@ -1,5 +1,6 @@
 
 import sys
+import re
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from databasemodel import DatabaseModel
@@ -43,6 +44,9 @@ class DatabaseView(QWidget):
 
         self.button_query = QPushButton('Run query', self)
         self.button_query.clicked.connect(self.run_query)
+        
+        self.button_visualize = QPushButton('Visualize', self)
+        self.button_visualize.clicked.connect(self.run_visualize)
 
 
         
@@ -57,6 +61,7 @@ class DatabaseView(QWidget):
         self.grid.addWidget(self.button_exportpath, 2, 2)
         self.grid.addWidget(self.label_filter, 3, 1)
         self.grid.addWidget(self.button_query, 3, 0)
+        self.grid.addWidget(self.button_visualize, 4, 0)
     
     def run_query(self):
         self.model.setPath(self.edit_dbpath.displayText())
@@ -64,6 +69,18 @@ class DatabaseView(QWidget):
         self.model.setExportpath(self.edit_exportpath.displayText())
         self.addFilter()
         self.controller.run_database_query(self.model)
+    
+    def run_visualize(self):
+        print("Visualizing...")
+        
+        if self.model.getResult != None:
+            for row in self.model.getResult():
+                for line in row[0]:
+                    if re.search("\sReceived:", line):
+                        print("Received.")
+                    elif re.search("\sSent:", line):
+                        print("Sent.")
+                
     
     def run_dbpath(self):
         self.dbpath = QFileDialog.getOpenFileName(self, 'Open file', '/home')[0]

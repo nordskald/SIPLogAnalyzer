@@ -116,11 +116,13 @@ class Controller():
                         textresult += row[0]
                         textresult += "\n"
                     exportfile.write(textresult)
+                    self.databasemodel.setResult(result)
             else:
                 for row in result:
                     textresult += row[0]
                     textresult += "\n"
                 print(textresult)
+                self.databasemodel.setResult(result)
             self.db_query.close()
         else:
             print("Database does not exist.")

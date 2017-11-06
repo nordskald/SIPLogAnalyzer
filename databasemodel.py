@@ -25,3 +25,9 @@ class DatabaseModel():
     
     def getExportpath(self):
         return self.exportpath
+    
+    def setResult(self, result):
+        self.result = result
+    
+    def getResult(self):
+        return self.result
