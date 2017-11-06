@@ -6,6 +6,7 @@ class DatabaseModel():
         self.path = ""
         self.query = ""
         self.result = None
+        self.exportpath = ""
     
     def setPath(self, path):
         self.path = path
@@ -18,3 +19,9 @@ class DatabaseModel():
     
     def getQuery(self):
         return self.query
+    
+    def setExportpath(self, path):
+        self.exportpath = path
+    
+    def getExportpath(self):
+        return self.exportpath

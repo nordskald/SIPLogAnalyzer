@@ -2,12 +2,17 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+
+#Views
 from importview import ImportView
 from databaseview import DatabaseView
 from filterview import FilterView
+
+#Models
 from importmodel import ImportModel
 from databasemodel import DatabaseModel
 from filtermodel import FilterModel
+
 from controller import Controller
 from settings import Settings
 
@@ -65,7 +70,7 @@ class MainWindow(QMainWindow):
         self.viewmenu.addAction(self.menuact_filter)
     
     def menu_databaseaction(self):
-        self.databaseview = DatabaseView(self.databasemodel, self.controller)
+        self.databaseview = DatabaseView(self.databasemodel, self.controller, self.filtermodel)
         self.setCentralWidget(self.databaseview)
         self.statusBar().showMessage(self.databasemodel.getQuery())
     

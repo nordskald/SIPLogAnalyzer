@@ -35,8 +35,6 @@ class FilterView(QWidget):
         
     
     def save_filter(self):
-        print("Saving filter...")
         self.model.setFilter(str(self.text.toPlainText()).split('\n'))
-        print(self.model.getFilter())
 
     

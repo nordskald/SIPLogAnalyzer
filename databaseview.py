@@ -7,10 +7,11 @@ from controller import *
 
 class DatabaseView(QWidget):
     
-    def __init__(self, dbmodel, controller):
+    def __init__(self, dbmodel, controller, filtermodel):
         super().__init__()
         
         self.model = dbmodel
+        self.filtermodel = filtermodel
         self.controller = controller
         
         self.initUI()
@@ -27,7 +28,18 @@ class DatabaseView(QWidget):
         
         self.label_query = QLabel('Query')
         self.edit_query = QLineEdit(self)
-        self.edit_query.setText(self.model.getQuery())
+        if self.model.getQuery() == "":
+            self.edit_query.setText("SELECT packet FROM Call")
+        else:
+            self.edit_query.setText(self.model.getQuery())
+        
+        self.label_exportpath = QLabel('Save result in')
+        self.edit_exportpath = QLineEdit(self)
+        self.button_exportpath = QPushButton('Open', self)
+        self.button_exportpath.clicked.connect(self.run_exportpath)
+        
+        filterlabel = self.filtermodel.getFilter()
+        self.label_filter = QLabel('Applied filter: ' + str(filterlabel))
 
         self.button_query = QPushButton('Run query', self)
         self.button_query.clicked.connect(self.run_query)
@@ -40,15 +52,41 @@ class DatabaseView(QWidget):
         self.grid.addWidget(self.button_dbpath, 0, 2)
         self.grid.addWidget(self.label_query, 1, 0)
         self.grid.addWidget(self.edit_query, 1, 1)
-        self.grid.addWidget(self.button_query, 2, 0)
+        self.grid.addWidget(self.label_exportpath, 2, 0)
+        self.grid.addWidget(self.edit_exportpath, 2, 1)
+        self.grid.addWidget(self.button_exportpath, 2, 2)
+        self.grid.addWidget(self.label_filter, 3, 1)
+        self.grid.addWidget(self.button_query, 3, 0)
     
     def run_query(self):
         self.model.setPath(self.edit_dbpath.displayText())
         self.model.setQuery(self.edit_query.displayText())
+        self.model.setExportpath(self.edit_exportpath.displayText())
+        self.addFilter()
         self.controller.run_database_query(self.model)
     
     def run_dbpath(self):
         self.dbpath = QFileDialog.getOpenFileName(self, 'Open file', '/home')[0]
         self.edit_dbpath.setText(self.dbpath)
+    
+    def run_exportpath(self):
+        self.exportpath = QFileDialog.getOpenFileName(self, 'Open file', '/home')[0]
+        self.edit_exportpath.setText(self.exportpath)
+    
+    def addFilter(self):
+        if "WHERE" in self.model.getQuery():
+            dummy = ""
+            #Will add functionality to add more filters to already defined filter.
+            
+        else:
+            query = " WHERE "
+            for filter in self.filtermodel.getFilter():
+                query += "packet LIKE '%" + filter + "%'"
+                if filter != self.filtermodel.getFilter()[-1]:
+                    query += " AND "
+                else:
+                    query += ";"
+            self.model.setQuery(self.model.getQuery() + " " + query)
+        print(self.model.getQuery())
 
     
