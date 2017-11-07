@@ -4,6 +4,7 @@ import re
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from databasemodel import DatabaseModel
+from callmodel import CallModel
 from controller import *
 
 class DatabaseView(QWidget):
@@ -89,6 +90,12 @@ class DatabaseView(QWidget):
         arr = []
         
         for row in self.model.getResult():
+            if re.search("\sINVITE\ssip:", row):
+                if re.search("\sReceived:",row):
+                    print("Received")
+                    
+                elif re.search("\sSent:", row):
+                    print("Sent")
             if re.search("\sReceived:", row):
                 print("Received.")
                 if re.search(ipstring, row):
