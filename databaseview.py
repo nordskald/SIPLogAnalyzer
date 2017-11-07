@@ -75,14 +75,74 @@ class DatabaseView(QWidget):
         #print(self.model.getResult())
         #print(self.model.getResult()[0])
         
+        #ipstring = "^.*Via:\s.*(\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3})(:.*)"
+        #ipstring = "\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}"
+        ipstring = "SIP\/2[.]0\/UDP\s(\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}):\d*"
+        messagestring = "(SIP\/2[.]0\s)(\d\d\d\s.*)"
+        invstring = "INVITE\ssip:"
+        byestring = "BYE\ssip:"
+        ackstring = "ACK\ssip:"
+        
+        host = "localhost"
+        js = ""
+        message = ""
+        arr = []
+        
         for row in self.model.getResult():
             if re.search("\sReceived:", row):
                 print("Received.")
+                if re.search(ipstring, row):
+                    r = re.search(ipstring, row)
+                    js += r.group(1)
+                    m = "."
+                    if re.search(messagestring, row):
+                        r = re.search(messagestring, row)
+                        m = r.group(2)
+                    elif re.search(invstring, row):
+                        m = "INVITE"
+                    elif re.search(byestring, row):
+                        m = "BYE"
+                    elif re.search(ackstring, row):
+                        m = "ACK"
+                    js = js + "->" + host +": " + m + "\\n"
+                print(js)
+                arr.append(js)
+                #js = ""
+
             elif re.search("\sSent:", row):
                 print("Sent.")
-            if re.search("Via:\s(.*)(;.*)", row):
-                r = re.search("Via:\s(.*)(;.*)", row)
-                print(r.group(1))
+                if re.search(ipstring, row):
+                    r = re.search(ipstring, row)
+                    js += host
+                    js += "->"
+                    js += r.group(1)
+                    m = "."
+                    if re.search(messagestring, row):
+                        r = re.search(messagestring, row)
+                        m = r.group(2)
+                    elif re.search(invstring, row):
+                        m = "INVITE"
+                    elif re.search(byestring, row):
+                        m = "BYE"
+                    elif re.search(ackstring, row):
+                        m = "ACK"
+                    js = js + ": " + m + "\\n"
+                print(js)
+                arr.append(js)
+                #js = ""
+        
+        with open('visual.html', 'w') as file:
+            file.write("<!DOCTYPE html>\n");
+            file.write("<html>\n")
+            file.write("<head><script src=\"Javascript/webfont.js\"></script><script src=\"Javascript/snap.svg-min.js\"></script><script src=\"Javascript/underscore-min.js\"></script><script src=\"Javascript/sequence-diagram-min.js\"></script></head>\n")
+            file.write("<body>\n")
+            file.write("<div id=\"diagram\"></div>\n")
+            file.write("<script>var diagram = Diagram.parse(\"" + js + "\");\ndiagram.drawSVG('diagram', {theme: 'simple'});</script>\n")
+            file.write("</body>\n")
+            file.write("<html>\n")
+            #if re.search("Via:\s(.*)(;.*)", row):
+            #    r = re.search("Via:\s(.*)(;.*)", row)
+            #    print(r.group(1))
         
         #for row in self.model.getResult():
         #    for line in row:
